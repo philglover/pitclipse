@@ -2,15 +2,15 @@
 <?eclipse version="3.4"?>
 <fragment>
    <extension
-         point="org.pitest.pitclipse.ui.results">
-      <update
-            class="org.pitest.pitclipse.ui.swtbot.PitResultNotifier">
-      </update>
-   </extension>
-   <extension
          point="org.pitest.pitclipse.core.executePit">
       <pit_options
             class="org.pitest.pitclipse.ui.swtbot.PitOptionsTestNotifier">
       </pit_options>
+   </extension>
+   <extension
+         point="org.pitest.pitclipse.core.results">
+      <results
+            class="org.pitest.pitclipse.ui.swtbot.PitResultNotifier">
+      </results>
    </extension>
 </fragment>

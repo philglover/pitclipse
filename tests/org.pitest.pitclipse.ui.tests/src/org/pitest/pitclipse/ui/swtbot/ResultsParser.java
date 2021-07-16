@@ -22,6 +22,11 @@ import java.util.Map;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class ResultsParser {
 
     public static final class Summary {
@@ -56,8 +61,8 @@ public class ResultsParser {
 
     private final String html;
 
-    public ResultsParser(String html) {
-        this.html = html;
+    public ResultsParser(File file) throws IOException {
+        this.html = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
     }
 
     private String getProjectSummary() {

@@ -41,7 +41,7 @@ public enum PageObjects {
         packageExplorer = new PackageExplorer(bot);
         windowsMenu = new WindowsMenu(bot);
         runMenu = new RunMenu(bot);
-        pitSummaryView = new PitSummaryView();
+        pitSummaryView = new PitSummaryView(bot);
         pitMutationsView = new PitMutationsView(bot);
         buildProgress = new BuildProgress(bot);
         abstractSyntaxTree = new AbstractSyntaxTree();

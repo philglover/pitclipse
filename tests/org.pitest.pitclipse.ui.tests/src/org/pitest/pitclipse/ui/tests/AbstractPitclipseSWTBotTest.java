@@ -121,6 +121,19 @@ public abstract class AbstractPitclipseSWTBotTest {
         });
     }
 
+    protected static void openViewById(String viewId) throws InterruptedException {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                IWorkbench workbench = PlatformUI.getWorkbench();
+                try {
+                    workbench.getActiveWorkbenchWindow().getActivePage().showView(viewId);
+                } catch (WorkbenchException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     protected static IProject importTestProject(String projectName) throws CoreException {
         PAGES.getBuildProgress().listenForBuild();
         IProject importProject = ProjectImportUtil.importProject(projectName);

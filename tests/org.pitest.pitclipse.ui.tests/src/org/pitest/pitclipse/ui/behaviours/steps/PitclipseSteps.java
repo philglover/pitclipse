@@ -47,8 +47,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.pitest.pitclipse.runner.PitOptions;
 import org.pitest.pitclipse.runner.results.DetectionStatus;
 import org.pitest.pitclipse.ui.behaviours.pageobjects.PackageContext;
-import org.pitest.pitclipse.ui.behaviours.pageobjects.PitSummaryView;
-import org.pitest.pitclipse.ui.swtbot.PitNotifier;
+import org.pitest.pitclipse.ui.swtbot.PitResultNotifier.PitSummary;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -60,24 +59,24 @@ import io.cucumber.datatable.DataTable;
 public class PitclipseSteps {
 
     @When("test {word} in package {word} is run for project {word}")
-    public void runTest(final String testClassName, final String packageName, final String projectName) throws CoreException {
+    public void runTest(final String testClassName, final String packageName, final String projectName)
+            throws CoreException {
         // No need to do a full build: we should be now synchronized with building
         // Build the whole workspace to prevent random compilation failures
-        // ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
-        System.out.println
-            (String.format("Run PIT on: %s %s.%s",
-                projectName, packageName, testClassName));
+        // ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD,
+        // new NullProgressMonitor());
+        System.out.println(String.format("Run PIT on: %s %s.%s", projectName, packageName, testClassName));
         runPit(new SelectTestClass(testClassName, packageName, projectName));
     }
 
     @Then("a coverage report is generated with {int} class/classes tested with overall coverage of {int}% and mutation coverage of {int}%")
     public void coverageReportGenerated(int classes, double totalCoverage, double mutationCoverage) {
-        PitSummaryView pitView = PAGES.getPitSummaryView();
-        pitView.waitForUpdate();
+        PAGES.views().waitForTestsAreRunOnConsole();
         try {
-            assertEquals("Number of tested classes mismatch", classes, pitView.getClassesTested());
-            assertDoubleEquals("Total coverage mismatch", totalCoverage, pitView.getOverallCoverage());
-            assertDoubleEquals("Mutation coverage mismatch", mutationCoverage, pitView.getMutationCoverage());
+            assertEquals("Number of tested classes mismatch", classes, PitSummary.INSTANCE.getClasses());
+            assertDoubleEquals("Total coverage mismatch", totalCoverage, PitSummary.INSTANCE.getCodeCoverage());
+            assertDoubleEquals("Mutation coverage mismatch", mutationCoverage,
+                    PitSummary.INSTANCE.getMutationCoverage());
         } catch (Error e) {
             e.printStackTrace();
             throw e;
@@ -161,8 +160,8 @@ public class PitclipseSteps {
         // make sure to clear the console to avoid interferences
         // with the output of previous runs
         PAGES.views().clearConsole();
-        // make sure notifications not read are cleared
-        PitNotifier.INSTANCE.reset();
+        // make sure summary is cleared
+        PitSummary.INSTANCE.reset();
         int retryCount = 20;
         int counter = 0;
         while (counter < retryCount) {

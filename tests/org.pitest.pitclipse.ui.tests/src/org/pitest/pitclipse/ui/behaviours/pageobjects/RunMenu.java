@@ -47,6 +47,8 @@ public class RunMenu {
     }
 
     public void runPit() {
+        // focus package explorer to ensure the menu is found
+        bot.viewByTitle("Package Explorer").setFocus();
         SWTBotMenuHelper menuHelper = new SWTBotMenuHelper();
         SWTBotMenu runAsMenu = bot.menu(RUN)
                                   .menu(RUN_AS);
